@@ -15,7 +15,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-@WebServlet("/user")
+@WebServlet("/")
 public class UserServlet extends HttpServlet {
     private UserService userService;
 
@@ -26,9 +26,7 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if ("list".equalsIgnoreCase(req.getParameter("action"))){
             list(req, resp);
-        }
     }
 
     @Override
@@ -47,7 +45,7 @@ public class UserServlet extends HttpServlet {
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String email = request.getParameter("email");
-        String password = request.getParameter("password");
+        String password = hashPassword(request.getParameter("password"));
         String usertype = request.getParameter("usertype");
 
         User user = new User(username, firstName, lastName, email, password, usertype);
@@ -87,7 +85,7 @@ public class UserServlet extends HttpServlet {
     public void list(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         List<User> users = userService.findAll();
         request.setAttribute("users", users);
-        request.getRequestDispatcher("user.jsp").forward(request, response);
+        request.getRequestDispatcher("WEB-INF/index.jsp").forward(request, response);
     }
 
     public String hashPassword(String plainPassword) {
