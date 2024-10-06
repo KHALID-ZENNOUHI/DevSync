@@ -85,7 +85,7 @@ public class UserServlet extends HttpServlet {
     public void list(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         List<User> users = userService.findAll();
         request.setAttribute("users", users);
-        request.getRequestDispatcher("WEB-INF/index.jsp").forward(request, response);
+        request.getRequestDispatcher("user.jsp").forward(request, response);
     }
 
     public String hashPassword(String plainPassword) {
