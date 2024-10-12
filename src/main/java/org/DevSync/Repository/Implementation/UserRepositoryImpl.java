@@ -8,6 +8,7 @@ import org.DevSync.Domain.User;
 import org.DevSync.Repository.Interface.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public class UserRepositoryImpl implements UserRepository {
     private final EntityManagerFactory emf;
@@ -17,44 +18,61 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void create(User user) {
+    public User create(User user) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         em.persist(user);
         em.getTransaction().commit();
         em.close();
+        return user;
     }
 
     @Override
-    public User read(Long id) {
+    public Optional<User> findById(Long id) {
         EntityManager em = emf.createEntityManager();
-        User user = em.find(User.class, id);
+        Optional<User> user = Optional.ofNullable(em.find(User.class, id));
         em.close();
         return user;
     }
 
     @Override
-    public void update(User user) {
+    public Optional<User> findByEmail(String email) {
+        EntityManager em = emf.createEntityManager();
+        Optional<User> user = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+                .setParameter("email", email)
+                .getResultList()
+                .stream()
+                .findFirst();
+        em.close();
+        return user;
+    }
+
+    @Override
+    public User update(User user) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         em.merge(user);
         em.getTransaction().commit();
         em.close();
+        return user;
     }
 
     @Override
     public void delete(Long userId) {
         EntityManager em = emf.createEntityManager();  // Assuming you have an EntityManagerFactory
-        User user = em.find(User.class, userId);
-        if (user != null) {
+        Optional<User> userOptional = findById(userId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
             em.getTransaction().begin();
-            em.remove(user);
+            if (em.contains(user)) {
+                em.remove(user);
+            } else {
+                em.remove(em.merge(user));
+            }
             em.getTransaction().commit();
         }
         em.close();
     }
-
-
 
     @Override
     public List<User> findAll() {
