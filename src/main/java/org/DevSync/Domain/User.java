@@ -1,13 +1,9 @@
 package org.DevSync.Domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.DevSync.Domain.Enum.UserType;
+
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -32,10 +28,15 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String userType;
+    private UserType userType;
 
-    public User(String username, String firstName, String lastName, String email, String password, String userType) {
+    @OneToMany(mappedBy = "assignedTo")
+    private List<Task> tasks;
+
+
+    public User(String username, String firstName, String lastName, String email, String password, UserType userType) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -95,12 +96,20 @@ public class User {
         this.password = password;
     }
 
-    public String getUserType() {
+    public UserType getUserType() {
         return userType;
     }
 
-    public void setUserType(String userType) {
+    public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 
     @Override
@@ -114,5 +123,10 @@ public class User {
                 ", password='" + password + '\'' +
                 ", userType=" + userType +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }
