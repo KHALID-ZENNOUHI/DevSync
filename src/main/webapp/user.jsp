@@ -11,8 +11,12 @@
 </head>
 <body>
 <div class="container mt-4">
-    <h1>User List</h1>
+    <h1 class="text-center">Tasks</h1>
 
+    <div class="mt-4 text-center">
+        <a href="task" class="btn btn-secondary">Tasks</a>
+        <a href="tag" class="btn btn-secondary">Tags</a>
+    </div>
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
         Create New User
@@ -21,7 +25,6 @@
     <table class="table table-bordered mt-3">
         <thead>
         <tr>
-            <th>ID</th>
             <th>Username</th>
             <th>First Name</th>
             <th>Last Name</th>
@@ -38,7 +41,6 @@
                 for (User user : users) {
         %>
         <tr>
-            <td><%= user.getId() %></td>
             <td><%= user.getUsername() %></td>
             <td><%= user.getFirstName() %></td>
             <td><%= user.getLastName() %></td>
@@ -87,8 +89,8 @@
                                     <div class="form-group">
                                         <label for="usertype<%= user.getId() %>">User Type</label>
                                         <select class="form-control" id="usertype<%= user.getId() %>" name="usertype" required>
-                                            <option value="USER" <%= user.getUserType().equalsIgnoreCase("USER") ? "selected" : "" %>>User</option>
-                                            <option value="MANAGER" <%= user.getUserType().equalsIgnoreCase("MANAGER") ? "selected" : "" %>>Manager</option>
+                                            <option value="USER" <%= user.getUserType().name().equalsIgnoreCase("USER") ? "selected" : "" %>>User</option>
+                                            <option value="MANAGER" <%= user.getUserType().name().equalsIgnoreCase("MANAGER") ? "selected" : "" %>>Manager</option>
                                         </select>
                                     </div>
                                     <input type="hidden" name="action" value="update">
