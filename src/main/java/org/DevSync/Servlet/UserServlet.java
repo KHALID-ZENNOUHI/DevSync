@@ -1,4 +1,4 @@
-package org.DevSync.Servelet;
+package org.DevSync.Servlet;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -6,22 +6,24 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.DevSync.Domain.Enum.UserType;
 import org.DevSync.Domain.User;
 import org.DevSync.Service.Implementation.UserServiceImpl;
 import org.DevSync.Service.Interface.UserService;
+import org.DevSync.Util.PasswordHash;
 
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
+import java.util.Optional;
 
-@WebServlet("/")
+@WebServlet("/user")
 public class UserServlet extends HttpServlet {
     private UserService userService;
+    private PasswordHash passwordHash;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         this.userService = new UserServiceImpl();
+        this.passwordHash = new PasswordHash();
     }
 
     @Override
@@ -45,8 +47,8 @@ public class UserServlet extends HttpServlet {
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String email = request.getParameter("email");
-        String password = hashPassword(request.getParameter("password"));
-        String usertype = request.getParameter("usertype");
+        String password = this.passwordHash.hashPassword(request.getParameter("password"));
+        UserType usertype = UserType.valueOf(request.getParameter("usertype"));
 
         User user = new User(username, firstName, lastName, email, password, usertype);
         userService.create(user);
@@ -61,9 +63,10 @@ public class UserServlet extends HttpServlet {
         String lastName = request.getParameter("lastName");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        String usertype = request.getParameter("usertype");
-        User user = userService.read(UserId);
-        if (user != null) {
+        UserType usertype = UserType.valueOf(request.getParameter("usertype"));
+        Optional<User> userOptional = userService.findById(UserId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
             user.setUsername(username);
             user.setFirstName(firstName);
             user.setLastName(lastName);
@@ -83,32 +86,8 @@ public class UserServlet extends HttpServlet {
 
 
     public void list(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        List<User> users = userService.findAll();
-        request.setAttribute("users", users);
+        request.setAttribute("users", userService.findAll());
         request.getRequestDispatcher("user.jsp").forward(request, response);
     }
 
-    public String hashPassword(String plainPassword) {
-        try {
-            // Create MessageDigest instance for SHA-256
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-
-            // Add plain-text password bytes to digest
-            byte[] hashedBytes = md.digest(plainPassword.getBytes());
-
-            // Convert the byte array into hexadecimal format
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : hashedBytes) {
-                String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
-            }
-
-            // Return the hashed password in hexadecimal format
-            return hexString.toString();
-
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error hashing password", e);
-        }
-    }
 }
