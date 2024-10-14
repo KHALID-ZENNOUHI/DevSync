@@ -23,6 +23,8 @@ public class AuthenticationServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         this.userService = new UserServiceImpl();
         this.passwordHash = new PasswordHash();
+        TaskChangeRequestScheduler taskChangeRequestScheduler = new TaskChangeRequestScheduler();
+        taskChangeRequestScheduler.start();
     }
 
     @Override
@@ -46,7 +48,7 @@ public class AuthenticationServlet extends HttpServlet {
                         resp.sendRedirect("user");
                         break;
                     case "USER":
-                        resp.sendRedirect("manage");
+                        resp.sendRedirect("task");
                         break;
                     default:
                         resp.sendRedirect("login");
