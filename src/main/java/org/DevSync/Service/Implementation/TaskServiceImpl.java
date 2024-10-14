@@ -3,6 +3,7 @@ package org.DevSync.Service.Implementation;
 import org.DevSync.Domain.Task;
 import org.DevSync.Repository.Implementation.TaskRepositoryImpl;
 import org.DevSync.Repository.Interface.TaskRepository;
+import org.DevSync.Service.Interface.TagService;
 import org.DevSync.Service.Interface.TaskService;
 
 import java.util.List;
@@ -10,9 +11,11 @@ import java.util.Optional;
 
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
+    private final TagService tagService;
 
     public TaskServiceImpl() {
         this.taskRepository = new TaskRepositoryImpl();
+        this.tagService = new TagServiceImpl();
     }
 
     @Override
@@ -57,8 +60,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     public void validateTask(Task task) {
-        if (task == null) {
-            throw new IllegalArgumentException("Task cannot be null");
+        if (task == null || task.equals(new Task())) {
+            throw new IllegalArgumentException("Task cannot be null or empty");
         } else if (task.getTitle() == null || task.getTitle().isEmpty()) {
             throw new IllegalArgumentException("Task title cannot be empty");
         } else if (task.getDescription() == null || task.getDescription().isEmpty()) {
