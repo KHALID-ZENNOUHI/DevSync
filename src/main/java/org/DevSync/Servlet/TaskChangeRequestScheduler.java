@@ -68,8 +68,8 @@ public class TaskChangeRequestScheduler {
         List<TaskChangeRequest> taskChanges = taskChangeRequestService.findAll();
         for (TaskChangeRequest taskChange : taskChanges) {
             if (taskChange.getChangeDate().plusHours(12).isBefore(LocalDateTime.now())){
-                User user = taskChange.getUser();
-                Jeton jeton = jetonService.findUserJetons(user);
+                User user = taskChange.getRequestedBy();
+                Jeton jeton = jetonService.findJetonByUser(user);
                 jeton.setResetChangeJetons(jeton.getResetChangeJetons() + 2);
                 jetonService.update(jeton);
                 taskChangeRequestService.delete(taskChange.getId());
