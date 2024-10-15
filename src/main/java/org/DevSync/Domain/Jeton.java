@@ -12,7 +12,7 @@ public class Jeton {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private int id;
 
-        @ManyToOne
+        @OneToOne
         @JoinColumn(name = "user_id", nullable = false)
         private User user;
 
