@@ -39,7 +39,7 @@ public class Task {
     private User createdBy;
 
     @Column(name = "is_locked")
-    private boolean isLocked;
+    private boolean alreadyChanged;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -61,7 +61,7 @@ public class Task {
         this.taskStatus = taskStatus;
         this.assignedTo = assignedTo;
         this.createdBy = createdBy;
-        this.isLocked = false;
+        this.alreadyChanged = false;
         this.tags = tags;
     }
 
@@ -129,12 +129,12 @@ public class Task {
         this.createdBy = createdBy;
     }
 
-    public boolean isLocked() {
-        return isLocked;
+    public boolean isAlreadyChanged() {
+        return alreadyChanged;
     }
 
-    public void setLocked(boolean locked) {
-        isLocked = locked;
+    public void setAlreadyChanged(boolean alreadyChanged) {
+        this.alreadyChanged = alreadyChanged;
     }
 
     public List<Tag> getTags() {
@@ -156,20 +156,9 @@ public class Task {
                 ", taskStatus=" + taskStatus +
                 ", assignedTo=" + assignedTo +
                 ", createdBy=" + createdBy +
-                ", isLocked=" + isLocked +
+                ", isLocked=" + alreadyChanged +
                 ", tags=" + tags +
                 '}';
-    }
-
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        Task task = (Task) obj;
-        return id == task.id;
     }
 }
 
