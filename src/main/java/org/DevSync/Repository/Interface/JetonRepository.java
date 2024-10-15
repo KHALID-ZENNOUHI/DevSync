@@ -12,7 +12,7 @@ public interface JetonRepository {
     Jeton update(Jeton jeton);
     void delete(Long id);
     void deleteAllInResetDate();
-    Jeton findUserJetons(User user);
+    Jeton findJetonByUser(User user);
     List<Jeton> findAll();
 
 

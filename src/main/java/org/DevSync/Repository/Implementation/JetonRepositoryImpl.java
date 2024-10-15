@@ -65,7 +65,7 @@ public class JetonRepositoryImpl implements JetonRepository {
     }
 
     @Override
-    public Jeton findUserJetons(User user) {
+    public Jeton findJetonByUser(User user) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         Jeton jeton = em.createQuery("SELECT j FROM Jeton j WHERE j.user = :user", Jeton.class)

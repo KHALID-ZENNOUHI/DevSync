@@ -41,8 +41,8 @@ public class JetonServiceImpl implements JetonService {
     }
 
     @Override
-    public Jeton findUserJetons(User user) {
-        return jetonRepository.findUserJetons(user);
+    public Jeton findJetonByUser(User user) {
+        return jetonRepository.findJetonByUser(user);
     }
 
 
