@@ -35,6 +35,9 @@ public class User {
     @OneToMany(mappedBy = "assignedTo")
     private List<Task> tasks;
 
+    @OneToOne(mappedBy = "user")
+    private Jeton jeton;
+
 
     public User(String username, String firstName, String lastName, String email, String password, UserType userType) {
         this.username = username;
@@ -110,6 +113,14 @@ public class User {
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    public Jeton getJeton() {
+        return jeton;
+    }
+
+    public void setJeton(Jeton jeton) {
+        this.jeton = jeton;
     }
 
     @Override
