@@ -5,17 +5,11 @@
     import jakarta.servlet.http.HttpServlet;
     import jakarta.servlet.http.HttpServletRequest;
     import jakarta.servlet.http.HttpServletResponse;
+    import org.DevSync.Domain.*;
     import org.DevSync.Domain.Enum.TaskStatus;
     import org.DevSync.Domain.Enum.UserType;
-    import org.DevSync.Domain.Tag;
-    import org.DevSync.Domain.Task;
-    import org.DevSync.Domain.User;
-    import org.DevSync.Service.Implementation.TagServiceImpl;
-    import org.DevSync.Service.Implementation.TaskServiceImpl;
-    import org.DevSync.Service.Implementation.UserServiceImpl;
-    import org.DevSync.Service.Interface.TagService;
-    import org.DevSync.Service.Interface.TaskService;
-    import org.DevSync.Service.Interface.UserService;
+    import org.DevSync.Service.Implementation.*;
+    import org.DevSync.Service.Interface.*;
 
     import java.io.IOException;
     import java.time.LocalDateTime;
@@ -29,12 +23,16 @@
         private TaskService taskService;
         private TagService tagService;
         private UserService userService;
+        private TaskChangeRequestService taskChangeRequestService;
+        private JetonService jetonService;
 
         @Override
         public void init() throws ServletException {
             this.taskService = new TaskServiceImpl();
             this.tagService = new TagServiceImpl();
             this.userService = new UserServiceImpl();
+            this.taskChangeRequestService = new TaskChangeRequestServiceImpl();
+            this.jetonService = new JetonServiceImpl();
         }
 
         @Override
@@ -48,13 +46,11 @@
             if ("create".equals(action)) create(req, resp);
             else if ("update".equals(action)) update(req, resp);
             else if ("delete".equals(action)) delete(req, resp);
+            else if ("request".equals(action)) handleTaskChangeRequest(req, resp);
         }
 
         public void create(HttpServletRequest request, HttpServletResponse response) throws IOException {
             Task task = getAllAttributes(request);
-            checkIfDeadlineIsAfterThreeDaysOfStartDate(task);
-            checkIfStartDateIsBeforeEndDate(task);
-            enforceTaskCompletionBeforeDeadline(task);
             Task savedTask = taskService.create(task);
             request.setAttribute("message", "the task " + savedTask.getTitle() + "created successfully!");
             response.sendRedirect("task?action=list");
@@ -62,18 +58,30 @@
 
         public void update(HttpServletRequest request, HttpServletResponse response) throws IOException {
             Task task = getAllAttributes(request);
-            checkIfStartDateIsBeforeEndDate(task);
-            checkIfDeadlineIsAfterThreeDaysOfStartDate(task);
-            enforceTaskCompletionBeforeDeadline(task);
             Task updatedTask = taskService.update(task);
             request.setAttribute("message", "The task " + updatedTask.getTitle() + "updated successfully!");
             response.sendRedirect("task?action=list");
         }
 
-        public void delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        public void delete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+            User logedUser = (User) request.getSession().getAttribute("user");
             Long id = Long.parseLong(request.getParameter("id"));
-            taskService.delete(id);
-            response.sendRedirect("task?action=list");
+
+            if (logedUser.getUserType() == UserType.MANAGER) {
+                taskService.delete(id);
+
+                if (logedUser.getUserType() != UserType.MANAGER) {
+                    Jeton jeton = logedUser.getJeton();
+                    jeton.setDeleteJeton(jeton.getDeleteJeton() - 1);
+                    jetonService.update(jeton);
+                }
+
+                request.setAttribute("message", "Task deleted successfully!");
+                response.sendRedirect("task?action=list");
+            } else {
+                request.setAttribute("error", "You do not have permission to delete this task.");
+                request.getRequestDispatcher("task.jsp").forward(request, response);
+            }
         }
 
         public void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -92,21 +100,14 @@
             request.getRequestDispatcher("task.jsp").forward(request, response);
         }
 
-        public void checkIfDeadlineIsAfterThreeDaysOfStartDate(Task task) {
-            if (task.getDeadline().isBefore(task.getCreated_at().plusDays(3))) {
-                throw new IllegalArgumentException("Task deadline must be at least 3 days after start date");
-            }
-        }
-
-        public void checkIfStartDateIsBeforeEndDate(Task task) {
-            if (task.getCreated_at().isAfter(task.getDeadline())) {
-                throw new IllegalArgumentException("Task start date must be before end date");
-            }
-        }
-
-        public void enforceTaskCompletionBeforeDeadline(Task task) {
-            if (task.getTaskStatus() == TaskStatus.COMPLETED && LocalDateTime.now().isAfter(task.getDeadline())) {
-                throw new IllegalArgumentException("Task cannot be marked as completed after the deadline");
+        public void handleTaskChangeRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+            Long taskId = Long.parseLong(request.getParameter("id"));
+            Task task = taskService.findById(taskId).orElseThrow(() -> new IllegalArgumentException("Task not found"));
+            User user = (User) request.getSession().getAttribute("user");
+            if (user.getJeton().getChangeJeton() > 0){
+                TaskChangeRequest taskChangeRequest = new TaskChangeRequest(task, user, LocalDateTime.now());
+                taskChangeRequestService.create(taskChangeRequest);
+                response.sendRedirect("task?action=list");
             }
         }
 

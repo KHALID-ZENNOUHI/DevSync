@@ -1,11 +1,13 @@
 package org.DevSync.Service.Implementation;
 
+import org.DevSync.Domain.Enum.TaskStatus;
 import org.DevSync.Domain.Task;
 import org.DevSync.Repository.Implementation.TaskRepositoryImpl;
 import org.DevSync.Repository.Interface.TaskRepository;
 import org.DevSync.Service.Interface.TagService;
 import org.DevSync.Service.Interface.TaskService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +23,9 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task create(Task task) {
         validateTask(task);
+        checkIfStartDateIsBeforeEndDate(task);
+        checkIfDeadlineIsAfterThreeDaysOfStartDate(task);
+        enforceTaskCompletionBeforeDeadline(task);
         return this.taskRepository.create(task);
     }
 
@@ -35,6 +40,9 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task update(Task task) {
         validateTask(task);
+        checkIfStartDateIsBeforeEndDate(task);
+        checkIfDeadlineIsAfterThreeDaysOfStartDate(task);
+        enforceTaskCompletionBeforeDeadline(task);
         return this.taskRepository.update(task);
     }
 
@@ -60,8 +68,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     public void validateTask(Task task) {
-        if (task == null || task.equals(new Task())) {
-            throw new IllegalArgumentException("Task cannot be null or empty");
+        if (task == null) {
+            throw new IllegalArgumentException("Task cannot be null");
         } else if (task.getTitle() == null || task.getTitle().isEmpty()) {
             throw new IllegalArgumentException("Task title cannot be empty");
         } else if (task.getDescription() == null || task.getDescription().isEmpty()) {
@@ -78,6 +86,24 @@ public class TaskServiceImpl implements TaskService {
             throw new IllegalArgumentException("Task creator cannot be null");
         } else if (task.getTags() == null || task.getTags().isEmpty() || task.getTags().size() < 2) {
             throw new IllegalArgumentException("Task must have at least two tags");
+        }
+    }
+
+    public void checkIfDeadlineIsAfterThreeDaysOfStartDate(Task task) {
+        if (task.getDeadline().isBefore(task.getCreated_at().plusDays(3))) {
+            throw new IllegalArgumentException("Task deadline must be at least 3 days after start date");
+        }
+    }
+
+    public void checkIfStartDateIsBeforeEndDate(Task task) {
+        if (task.getCreated_at().isAfter(task.getDeadline())) {
+            throw new IllegalArgumentException("Task start date must be before end date");
+        }
+    }
+
+    public void enforceTaskCompletionBeforeDeadline(Task task) {
+        if (task.getTaskStatus() == TaskStatus.COMPLETED && LocalDateTime.now().isAfter(task.getDeadline())) {
+            throw new IllegalArgumentException("Task cannot be marked as completed after the deadline");
         }
     }
 }
