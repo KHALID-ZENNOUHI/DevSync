@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.DevSync.Domain.Enum.UserType;
+import org.DevSync.Domain.Jeton;
 import org.DevSync.Domain.User;
 import org.DevSync.Service.Implementation.UserServiceImpl;
 import org.DevSync.Service.Interface.UserService;
@@ -37,12 +39,15 @@ public class AuthenticationServlet extends HttpServlet {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
         Optional<User> userOptional = this.userService.findByEmail(email);
+
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             String passwordHashed = user.getPassword();
+
             if (this.passwordHash.checkPassword(password, passwordHashed)) {
                 HttpSession session = req.getSession();
                 session.setAttribute("user", user);
+
                 switch (user.getUserType().name()) {
                     case "MANAGER":
                         resp.sendRedirect("user");
@@ -54,16 +59,20 @@ public class AuthenticationServlet extends HttpServlet {
                         resp.sendRedirect("login");
                         break;
                 }
+            } else {
+                req.setAttribute("error", "Invalid email or password");
+                req.getRequestDispatcher("login.jsp").forward(req, resp);
             }
-        }else {
+        } else {
             req.setAttribute("error", "Invalid email or password");
             req.getRequestDispatcher("login.jsp").forward(req, resp);
         }
-
     }
+
     public void logout(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         session.invalidate();
+        req.getContextPath();
         resp.sendRedirect("/");
     }
 }
