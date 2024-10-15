@@ -3,7 +3,8 @@ package org.DevSync.Domain;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-
+@Entity
+@Table(name = "task_change_requests")
 public class TaskChangeRequest {
 
     @Id
@@ -15,8 +16,8 @@ public class TaskChangeRequest {
     private Task task;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "requested_by", nullable = false)
+    private User requestedBy;
 
     @Column(name = "change_date", nullable = false)
     private LocalDateTime changeDate;
@@ -24,9 +25,9 @@ public class TaskChangeRequest {
     public TaskChangeRequest() {
     }
 
-    public TaskChangeRequest(Task task, User user, LocalDateTime changeDate) {
+    public TaskChangeRequest(Task task, User requestedBy, LocalDateTime changeDate) {
         this.task = task;
-        this.user = user;
+        this.requestedBy = requestedBy;
         this.changeDate = changeDate;
     }
 
@@ -46,12 +47,12 @@ public class TaskChangeRequest {
         this.task = task;
     }
 
-    public User getUser() {
-        return user;
+    public User getRequestedBy() {
+        return requestedBy;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setRequestedBy(User requestedBy) {
+        this.requestedBy = requestedBy;
     }
 
     public LocalDateTime getChangeDate() {
