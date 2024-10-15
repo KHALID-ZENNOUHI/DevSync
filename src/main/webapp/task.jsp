@@ -13,15 +13,33 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="container">
-    <h1 class="text-center my-4">Task Management</h1>
-
-    <!-- Button to trigger task modal -->
-    <div class="d-flex justify-content-end mb-3">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#taskModal">
-            Add Task
+<div class="container mt-4">
+    <h1 class="text-center">Tasks</h1>
+    <% if (((User) session.getAttribute("user")).getUserType() == UserType.MANAGER) { %>
+    <div class="mt-4 text-center">
+        <a href="user" class="btn btn-secondary">Users</a>
+        <a href="tag" class="btn btn-secondary">Tags</a>
+        <a href="taskrequest" class="btn btn-secondary">Requests</a>
+    </div>
+    <% } %>
+    <%
+        String message = (String) session.getAttribute("message");
+        if (message != null) {
+    %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= message %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
         </button>
     </div>
+    <%
+            session.removeAttribute("message"); // Remove the message after displaying it
+        }
+    %>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#taskModal">
+        Create New Task
+    </button>
 
     <div class="row">
         <!-- Pending Tasks Column -->
@@ -30,6 +48,11 @@
             <div class="card-columns">
                 <%
                     List<Task> tasksPending = (List<Task>) request.getAttribute("tasksPending");
+                    if (tasksPending == null || tasksPending.isEmpty()) {
+                %>
+                <p>No pending tasks available.</p>
+                <%
+                } else {
                     for (Task task : tasksPending) {
                 %>
                 <div class="card">
@@ -40,20 +63,24 @@
                         <% if (((User) session.getAttribute("user")).getUserType() == UserType.MANAGER) { %>
                         <p><strong>Assigned To:</strong> <%= task.getAssignedTo().getUsername() %></p>
                         <% } %>
-                        <p><strong>Tags:</strong>
-                                <%
-                            String tagTitles = task.getTags().stream()
-                                    .map(Tag::getName)
-                                    .collect(Collectors.joining(", "));
-                        %>
-                            <p><%= tagTitles %> </p>
-                            <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editTaskModal<%= task.getId() %>">
-                                Edit
-                            </button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteTask(<%= task.getId() %>)">Delete</button>
+                        <p><strong>Tags:</strong> <%= task.getTags().stream().map(Tag::getName).collect(Collectors.joining(", ")) %></p>
+                        <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editTaskModal<%= task.getId() %>">Edit</button>
+                        <form class="form-inline d-inline" method="post" action="task">
+                            <input type="hidden" name="id" value="<%= task.getId() %>">
+                            <input type="hidden" name="action" value="delete">
+                            <button class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                        <% if (((User) session.getAttribute("user")).getUserType() == UserType.USER) { %>
+                        <form class="form-inline d-inline" method="post" action="task">
+                            <input type="hidden" name="id" value="<%= task.getId() %>">
+                            <input type="hidden" name="action" value="request">
+                            <button class="btn btn-sm btn-success">Change</button>
+                        </form>
+                        <% } %>
                     </div>
                 </div>
                 <%
+                        }
                     }
                 %>
             </div>
@@ -65,6 +92,11 @@
             <div class="card-columns">
                 <%
                     List<Task> tasksInProcess = (List<Task>) request.getAttribute("tasksInProcess");
+                    if (tasksInProcess == null || tasksInProcess.isEmpty()) {
+                %>
+                <p>No in-progress tasks available.</p>
+                <%
+                } else {
                     for (Task task : tasksInProcess) {
                 %>
                 <div class="card">
@@ -75,20 +107,17 @@
                         <% if (((User) session.getAttribute("user")).getUserType() == UserType.MANAGER) { %>
                         <p><strong>Assigned To:</strong> <%= task.getAssignedTo().getUsername() %></p>
                         <% } %>
-                        <p><strong>Tags:</strong>
-                                <%
-                            String tagTitles = task.getTags().stream()
-                                    .map(Tag::getName)
-                                    .collect(Collectors.joining(", "));
-                        %>
-                            <p><%= tagTitles %> </p>
-                            <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editTaskModal<%= task.getId() %>">
-                                Edit
-                            </button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteTask(<%= task.getId() %>)">Delete</button>
+                        <p><strong>Tags:</strong> <%= task.getTags().stream().map(Tag::getName).collect(Collectors.joining(", ")) %></p>
+                        <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editTaskModal<%= task.getId() %>">Edit</button>
+                        <form class="form-inline d-inline" method="post" action="task">
+                            <input type="hidden" name="id" value="<%= task.getId() %>">
+                            <input type="hidden" name="action" value="delete">
+                            <button class="btn btn-sm btn-danger">Delete</button>
+                        </form>
                     </div>
                 </div>
                 <%
+                        }
                     }
                 %>
             </div>
@@ -100,6 +129,11 @@
             <div class="card-columns">
                 <%
                     List<Task> tasksCompleted = (List<Task>) request.getAttribute("tasksCompleted");
+                    if (tasksCompleted == null || tasksCompleted.isEmpty()) {
+                %>
+                <p>No completed tasks available.</p>
+                <%
+                } else {
                     for (Task task : tasksCompleted) {
                 %>
                 <div class="card">
@@ -110,20 +144,17 @@
                         <% if (((User) session.getAttribute("user")).getUserType() == UserType.MANAGER) { %>
                         <p><strong>Assigned To:</strong> <%= task.getAssignedTo().getUsername() %></p>
                         <% } %>
-                        <p><strong>Tags:</strong>
-                        <%
-                            String tagTitles = task.getTags().stream()
-                                    .map(Tag::getName)
-                                    .collect(Collectors.joining(", "));
-                        %>
-                        <p><%= tagTitles %> </p>
-                            <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editTaskModal<%= task.getId() %>">
-                                Edit
-                            </button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteTask(<%= task.getId() %>)">Delete</button>
+                        <p><strong>Tags:</strong> <%= task.getTags().stream().map(Tag::getName).collect(Collectors.joining(", ")) %></p>
+                        <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editTaskModal<%= task.getId() %>">Edit</button>
+                        <form class="form-inline d-inline" method="post" action="task">
+                            <input type="hidden" name="id" value="<%= task.getId() %>">
+                            <input type="hidden" name="action" value="delete">
+                            <button class="btn btn-sm btn-danger">Delete</button>
+                        </form>
                     </div>
                 </div>
                 <%
+                        }
                     }
                 %>
             </div>
@@ -215,8 +246,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="addTaskForm" method="post" action="task">
-                    <input type="hidden" name="action" value="create">
+                <form id="editTask" method="post" action="task">
+                    <input type="hidden" name="action" value="update">
+                    <input type="hidden" name="id" value="<%= task.getId() %>">
                     <div class="mb-3">
                         <label for="addTitle" class="form-label">Title</label>
                         <input type="text" class="form-control" id="addTitle" name="title" value="<%= task.getTitle() %>" required>
@@ -240,6 +272,7 @@
                     <div class="mb-3">
                         <label for="addTags" class="form-label">Tags</label>
                         <select class="form-control" id="addTags" name="tagName" multiple>
+
                             <% for (Tag tag : (List<Tag>) request.getAttribute("tags")) { %>
                             <option value="<%= tag.getName() %>" <%= task.getTags().contains(tag) ? "selected" : "" %>><%= tag.getName() %></option>
                             <% } %>

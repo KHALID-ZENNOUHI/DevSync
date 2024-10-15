@@ -13,7 +13,23 @@
     <div class="mt-4 text-center">
         <a href="task" class="btn btn-secondary">Tasks</a>
         <a href="user" class="btn btn-secondary">Users</a>
+        <a href="taskrequest" class="btn btn-secondary">Requests</a>
     </div>
+    <%
+        String message = (String) session.getAttribute("message");
+        if (message != null) {
+    %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= message %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <%
+            session.removeAttribute("message"); // Remove the message after displaying it
+        }
+    %>
+
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
         Create New Tag
