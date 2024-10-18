@@ -1,4 +1,4 @@
-package org.DevSync.Servlet;
+package org.DevSync.servlet;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -6,9 +6,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.DevSync.Domain.Tag;
-import org.DevSync.Service.Implementation.TagServiceImpl;
-import org.DevSync.Service.Interface.TagService;
+import org.DevSync.domain.Tag;
+import org.DevSync.service.Implementation.TagServiceImpl;
+import org.DevSync.service.Interface.TagService;
 
 import java.io.IOException;
 import java.util.Optional;

@@ -1,7 +1,7 @@
-package org.DevSync.Domain;
+package org.DevSync.domain;
 
 import jakarta.persistence.*;
-import org.DevSync.Domain.Enum.TaskStatus;
+import org.DevSync.domain.Enum.TaskStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,7 +12,7 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(nullable = false)
     private String title;
@@ -65,11 +65,11 @@ public class Task {
         this.tags = tags;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

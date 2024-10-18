@@ -1,5 +1,7 @@
-package org.DevSync.Servlet;
+package org.DevSync.servlet;
 
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -7,14 +9,15 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.DevSync.Domain.Enum.UserType;
-import org.DevSync.Domain.Jeton;
-import org.DevSync.Domain.User;
-import org.DevSync.Service.Implementation.JetonServiceImpl;
-import org.DevSync.Service.Implementation.UserServiceImpl;
-import org.DevSync.Service.Interface.JetonService;
-import org.DevSync.Service.Interface.UserService;
-import org.DevSync.Util.PasswordHash;
+import org.DevSync.domain.Enum.UserType;
+import org.DevSync.domain.Jeton;
+import org.DevSync.domain.User;
+import org.DevSync.repository.Implementation.UserRepositoryImpl;
+import org.DevSync.service.Implementation.JetonServiceImpl;
+import org.DevSync.service.Implementation.UserServiceImpl;
+import org.DevSync.service.Interface.JetonService;
+import org.DevSync.service.Interface.UserService;
+import org.DevSync.util.PasswordHash;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -23,13 +26,11 @@ import java.util.Optional;
 @WebServlet("/user")
 public class UserServlet extends HttpServlet {
     private UserService userService;
-    private PasswordHash passwordHash;
     private JetonService jetonService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        this.userService = new UserServiceImpl();
-        this.passwordHash = new PasswordHash();
+        this.userService = new UserServiceImpl(new UserRepositoryImpl());
         this.jetonService = new JetonServiceImpl();
     }
 
@@ -92,7 +93,7 @@ public class UserServlet extends HttpServlet {
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String email = request.getParameter("email");
-        String password = this.passwordHash.hashPassword(request.getParameter("password"));
+        String password = PasswordHash.hashPassword(request.getParameter("password"));
         UserType usertype = UserType.valueOf(request.getParameter("usertype"));
 
         if (request.getParameter("action").equalsIgnoreCase("update")) {

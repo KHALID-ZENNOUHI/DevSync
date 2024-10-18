@@ -1,6 +1,6 @@
-package org.DevSync.Repository.Interface;
+package org.DevSync.repository.Interface;
 
-import org.DevSync.Domain.Tag;
+import org.DevSync.domain.Tag;
 
 import java.util.List;
 import java.util.Optional;

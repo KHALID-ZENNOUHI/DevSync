@@ -1,9 +1,9 @@
-package org.DevSync.Service.Implementation;
+package org.DevSync.service.Implementation;
 
-import org.DevSync.Domain.Tag;
-import org.DevSync.Repository.Implementation.TagRepositoryImpl;
-import org.DevSync.Repository.Interface.TagRepository;
-import org.DevSync.Service.Interface.TagService;
+import org.DevSync.domain.Tag;
+import org.DevSync.repository.Implementation.TagRepositoryImpl;
+import org.DevSync.repository.Interface.TagRepository;
+import org.DevSync.service.Interface.TagService;
 
 import java.util.List;
 import java.util.Optional;

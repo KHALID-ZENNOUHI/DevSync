@@ -1,4 +1,4 @@
-package org.DevSync.Domain;
+package org.DevSync.domain;
 
 import jakarta.persistence.*;
 
