@@ -1,10 +1,10 @@
-package org.DevSync.Repository.Implementation;
+package org.DevSync.repository.Implementation;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import org.DevSync.Domain.TaskChangeRequest;
-import org.DevSync.Repository.Interface.TaskChangeRequestRepository;
+import org.DevSync.domain.TaskChangeRequest;
+import org.DevSync.repository.Interface.TaskChangeRequestRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -79,6 +79,17 @@ public class TaskChangeRequestRepositoryImpl implements TaskChangeRequestReposit
         em.getTransaction().begin();
         List<TaskChangeRequest> taskChangeRequests = em.createQuery("SELECT t FROM TaskChangeRequest t WHERE t.user.id = :userId", TaskChangeRequest.class)
                 .setParameter("userId", userId)
+                .getResultList();
+        em.getTransaction().commit();
+        em.close();
+        return taskChangeRequests;
+    }
+    @Override
+    public List<TaskChangeRequest> findByTaskId(Long taskId) {
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        List<TaskChangeRequest> taskChangeRequests = em.createQuery("SELECT t FROM TaskChangeRequest t WHERE t.task.id = :taskId", TaskChangeRequest.class)
+                .setParameter("taskId", taskId)
                 .getResultList();
         em.getTransaction().commit();
         em.close();

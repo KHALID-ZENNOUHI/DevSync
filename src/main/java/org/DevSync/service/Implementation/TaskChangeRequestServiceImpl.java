@@ -1,9 +1,9 @@
-package org.DevSync.Service.Implementation;
+package org.DevSync.service.Implementation;
 
-import org.DevSync.Domain.TaskChangeRequest;
-import org.DevSync.Repository.Implementation.TaskChangeRequestRepositoryImpl;
-import org.DevSync.Repository.Interface.TaskChangeRequestRepository;
-import org.DevSync.Service.Interface.TaskChangeRequestService;
+import org.DevSync.domain.TaskChangeRequest;
+import org.DevSync.repository.Implementation.TaskChangeRequestRepositoryImpl;
+import org.DevSync.repository.Interface.TaskChangeRequestRepository;
+import org.DevSync.service.Interface.TaskChangeRequestService;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +41,13 @@ public class TaskChangeRequestServiceImpl implements TaskChangeRequestService {
     }
 
     @Override
-    public List<TaskChangeRequest> findByUserId(Long userId) {
-        return this.taskChangeRequestRepository.findByUserId(userId);
+    public Optional<TaskChangeRequest> findByUserId(Long userId) {
+        return this.taskChangeRequestRepository.findByUserId(userId).stream().findFirst();
     }
+
+    @Override
+    public Optional<TaskChangeRequest> findByTaskId(Long taskId) {
+        return this.taskChangeRequestRepository.findByTaskId(taskId).stream().findFirst();
+    }
+
 }
