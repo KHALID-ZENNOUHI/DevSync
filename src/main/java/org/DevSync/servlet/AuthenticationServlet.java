@@ -1,5 +1,7 @@
-package org.DevSync.Servlet;
+package org.DevSync.servlet;
 
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -7,12 +9,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.DevSync.Domain.Enum.UserType;
-import org.DevSync.Domain.Jeton;
-import org.DevSync.Domain.User;
-import org.DevSync.Service.Implementation.UserServiceImpl;
-import org.DevSync.Service.Interface.UserService;
-import org.DevSync.Util.PasswordHash;
+import org.DevSync.domain.User;
+import org.DevSync.repository.Implementation.UserRepositoryImpl;
+import org.DevSync.service.Implementation.UserServiceImpl;
+import org.DevSync.service.Interface.UserService;
+import org.DevSync.util.PasswordHash;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -23,7 +24,7 @@ public class AuthenticationServlet extends HttpServlet {
     private PasswordHash passwordHash;
     @Override
     public void init(ServletConfig config) throws ServletException {
-        this.userService = new UserServiceImpl();
+        this.userService = new UserServiceImpl(new UserRepositoryImpl());
         this.passwordHash = new PasswordHash();
         TaskChangeRequestScheduler taskChangeRequestScheduler = new TaskChangeRequestScheduler();
         taskChangeRequestScheduler.start();
