@@ -25,7 +25,6 @@ public class AuthenticationServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         this.userService = new UserServiceImpl(new UserRepositoryImpl());
-        this.passwordHash = new PasswordHash();
         TaskChangeRequestScheduler taskChangeRequestScheduler = new TaskChangeRequestScheduler();
         taskChangeRequestScheduler.start();
     }
@@ -45,7 +44,7 @@ public class AuthenticationServlet extends HttpServlet {
             User user = userOptional.get();
             String passwordHashed = user.getPassword();
 
-            if (this.passwordHash.checkPassword(password, passwordHashed)) {
+            if (PasswordHash.checkPassword(password, passwordHashed)) {
                 HttpSession session = req.getSession();
                 session.setAttribute("user", user);
 
