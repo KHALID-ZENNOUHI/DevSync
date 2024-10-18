@@ -1,4 +1,4 @@
-package org.DevSync.Servlet;
+package org.DevSync.servlet;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -6,18 +6,19 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.DevSync.Domain.Enum.UserType;
-import org.DevSync.Domain.Jeton;
-import org.DevSync.Domain.Task;
-import org.DevSync.Domain.User;
-import org.DevSync.Service.Implementation.JetonServiceImpl;
-import org.DevSync.Service.Implementation.TaskChangeRequestServiceImpl;
-import org.DevSync.Service.Implementation.TaskServiceImpl;
-import org.DevSync.Service.Implementation.UserServiceImpl;
-import org.DevSync.Service.Interface.JetonService;
-import org.DevSync.Service.Interface.TaskChangeRequestService;
-import org.DevSync.Service.Interface.TaskService;
-import org.DevSync.Service.Interface.UserService;
+import org.DevSync.domain.Enum.UserType;
+import org.DevSync.domain.Jeton;
+import org.DevSync.domain.Task;
+import org.DevSync.domain.User;
+import org.DevSync.repository.Implementation.UserRepositoryImpl;
+import org.DevSync.service.Implementation.JetonServiceImpl;
+import org.DevSync.service.Implementation.TaskChangeRequestServiceImpl;
+import org.DevSync.service.Implementation.TaskServiceImpl;
+import org.DevSync.service.Implementation.UserServiceImpl;
+import org.DevSync.service.Interface.JetonService;
+import org.DevSync.service.Interface.TaskChangeRequestService;
+import org.DevSync.service.Interface.TaskService;
+import org.DevSync.service.Interface.UserService;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -32,7 +33,7 @@ public class TaskChangeRequestServlet extends HttpServlet {
 
     public TaskChangeRequestServlet() {
         this.taskChangeRequestService = new TaskChangeRequestServiceImpl();
-        this.userService = new UserServiceImpl();
+        this.userService = new UserServiceImpl(new UserRepositoryImpl());
         this.taskService = new TaskServiceImpl();
         this.jetonService = new JetonServiceImpl();
     }
