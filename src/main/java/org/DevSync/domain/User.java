@@ -1,9 +1,10 @@
-package org.DevSync.Domain;
+package org.DevSync.domain;
 
 import jakarta.persistence.*;
-import org.DevSync.Domain.Enum.UserType;
+import org.DevSync.domain.Enum.UserType;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -137,7 +138,21 @@ public class User {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) &&
+                Objects.equals(username, user.username) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(firstName, user.firstName) &&
+                Objects.equals(lastName, user.lastName) &&
+                Objects.equals(password, user.password) &&
+                userType == user.userType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, email, firstName, lastName, password, userType);
     }
 }
