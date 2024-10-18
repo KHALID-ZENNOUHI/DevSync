@@ -1,4 +1,4 @@
-package org.DevSync.Domain.Enum;
+package org.DevSync.domain.Enum;
 
 public enum UserType {
     MANAGER,

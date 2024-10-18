@@ -1,16 +1,16 @@
-package org.DevSync.Servlet;
+package org.DevSync.servlet;
 
-import org.DevSync.Domain.Enum.TaskStatus;
-import org.DevSync.Domain.Jeton;
-import org.DevSync.Domain.Task;
-import org.DevSync.Domain.TaskChangeRequest;
-import org.DevSync.Domain.User;
-import org.DevSync.Service.Implementation.JetonServiceImpl;
-import org.DevSync.Service.Implementation.TaskChangeRequestServiceImpl;
-import org.DevSync.Service.Implementation.TaskServiceImpl;
-import org.DevSync.Service.Interface.JetonService;
-import org.DevSync.Service.Interface.TaskChangeRequestService;
-import org.DevSync.Service.Interface.TaskService;
+import org.DevSync.domain.Enum.TaskStatus;
+import org.DevSync.domain.Jeton;
+import org.DevSync.domain.Task;
+import org.DevSync.domain.TaskChangeRequest;
+import org.DevSync.domain.User;
+import org.DevSync.service.Implementation.JetonServiceImpl;
+import org.DevSync.service.Implementation.TaskChangeRequestServiceImpl;
+import org.DevSync.service.Implementation.TaskServiceImpl;
+import org.DevSync.service.Interface.JetonService;
+import org.DevSync.service.Interface.TaskChangeRequestService;
+import org.DevSync.service.Interface.TaskService;
 
 import java.time.LocalDateTime;
 import java.util.List;

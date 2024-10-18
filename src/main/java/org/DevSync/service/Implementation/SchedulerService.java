@@ -1,16 +1,16 @@
-package org.DevSync.Service.Implementation;
+package org.DevSync.service.Implementation;
 
 
 import jakarta.ejb.Schedule;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
-import org.DevSync.Domain.Enum.TaskStatus;
-import org.DevSync.Domain.Jeton;
-import org.DevSync.Domain.Task;
-import org.DevSync.Repository.Implementation.JetonRepositoryImpl;
-import org.DevSync.Repository.Implementation.TaskRepositoryImpl;
-import org.DevSync.Repository.Interface.JetonRepository;
-import org.DevSync.Repository.Interface.TaskRepository;
+import org.DevSync.domain.Enum.TaskStatus;
+import org.DevSync.domain.Jeton;
+import org.DevSync.domain.Task;
+import org.DevSync.repository.Implementation.JetonRepositoryImpl;
+import org.DevSync.repository.Implementation.TaskRepositoryImpl;
+import org.DevSync.repository.Interface.JetonRepository;
+import org.DevSync.repository.Interface.TaskRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
