@@ -1,10 +1,10 @@
-package org.DevSync.Repository.Implementation;
+package org.DevSync.repository.Implementation;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import org.DevSync.Domain.Task;
-import org.DevSync.Repository.Interface.TaskRepository;
+import org.DevSync.domain.Task;
+import org.DevSync.repository.Interface.TaskRepository;
 
 import java.util.List;
 import java.util.Optional;

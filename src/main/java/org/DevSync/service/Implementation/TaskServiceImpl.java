@@ -1,11 +1,11 @@
-package org.DevSync.Service.Implementation;
+package org.DevSync.service.Implementation;
 
-import org.DevSync.Domain.Enum.TaskStatus;
-import org.DevSync.Domain.Task;
-import org.DevSync.Repository.Implementation.TaskRepositoryImpl;
-import org.DevSync.Repository.Interface.TaskRepository;
-import org.DevSync.Service.Interface.TagService;
-import org.DevSync.Service.Interface.TaskService;
+import org.DevSync.domain.Enum.TaskStatus;
+import org.DevSync.domain.Task;
+import org.DevSync.repository.Implementation.TaskRepositoryImpl;
+import org.DevSync.repository.Interface.TaskRepository;
+import org.DevSync.service.Interface.TagService;
+import org.DevSync.service.Interface.TaskService;
 
 import java.time.LocalDateTime;
 import java.util.List;

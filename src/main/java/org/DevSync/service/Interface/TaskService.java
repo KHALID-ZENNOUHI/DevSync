@@ -1,11 +1,11 @@
-package org.DevSync.Repository.Interface;
+package org.DevSync.service.Interface;
 
-import org.DevSync.Domain.Task;
+import org.DevSync.domain.Task;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface TaskRepository {
+public interface TaskService {
     Task create(Task task);
     Optional<Task> findById(Long id);
     Task update(Task task);
