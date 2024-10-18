@@ -1,11 +1,11 @@
-package org.DevSync.Repository.Implementation;
+package org.DevSync.repository.Implementation;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import org.DevSync.Domain.Jeton;
-import org.DevSync.Domain.User;
-import org.DevSync.Repository.Interface.JetonRepository;
+import org.DevSync.domain.Jeton;
+import org.DevSync.domain.User;
+import org.DevSync.repository.Interface.JetonRepository;
 
 import java.util.List;
 import java.util.Optional;

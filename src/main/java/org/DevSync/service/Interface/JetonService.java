@@ -1,12 +1,12 @@
-package org.DevSync.Repository.Interface;
+package org.DevSync.service.Interface;
 
-import org.DevSync.Domain.Jeton;
-import org.DevSync.Domain.User;
+import org.DevSync.domain.Jeton;
+import org.DevSync.domain.User;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface JetonRepository {
+public interface JetonService {
     Jeton create(Jeton jeton);
     Optional<Jeton> findById(Long id);
     Jeton update(Jeton jeton);
@@ -14,7 +14,4 @@ public interface JetonRepository {
     void deleteAllInResetDate();
     Jeton findJetonByUser(User user);
     List<Jeton> findAll();
-
-
-
 }

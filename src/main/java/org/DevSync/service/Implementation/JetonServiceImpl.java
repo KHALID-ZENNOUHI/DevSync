@@ -1,10 +1,10 @@
-package org.DevSync.Service.Implementation;
+package org.DevSync.service.Implementation;
 
-import org.DevSync.Domain.Jeton;
-import org.DevSync.Domain.User;
-import org.DevSync.Repository.Implementation.JetonRepositoryImpl;
-import org.DevSync.Repository.Interface.JetonRepository;
-import org.DevSync.Service.Interface.JetonService;
+import org.DevSync.domain.Jeton;
+import org.DevSync.domain.User;
+import org.DevSync.repository.Implementation.JetonRepositoryImpl;
+import org.DevSync.repository.Interface.JetonRepository;
+import org.DevSync.service.Interface.JetonService;
 
 import java.util.List;
 import java.util.Optional;
