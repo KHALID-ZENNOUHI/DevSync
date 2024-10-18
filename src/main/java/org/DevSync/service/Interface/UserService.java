@@ -1,6 +1,6 @@
-package org.DevSync.Service.Interface;
+package org.DevSync.service.Interface;
 
-import org.DevSync.Domain.User;
+import org.DevSync.domain.User;
 
 import java.util.List;
 import java.util.Optional;

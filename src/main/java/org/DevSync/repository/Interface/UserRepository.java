@@ -1,8 +1,7 @@
-package org.DevSync.Repository.Interface;
+package org.DevSync.repository.Interface;
 
-import org.DevSync.Domain.User;
+import org.DevSync.domain.User;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
