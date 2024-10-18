@@ -1,194 +1,294 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="org.DevSync.Domain.User" %>
+<%@ page import="org.DevSync.domain.User" %>
 <!DOCTYPE html>
 <html lang="en">
+
+<!-- Mirrored from zoyothemes.com/kadso/html/ by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 08 Oct 2024 10:43:05 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
 <head>
-    <meta charset="UTF-8">
+
+    <meta charset="utf-8" />
+    <title>Users</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <title>User List</title>
+    <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc."/>
+    <meta name="author" content="Zoyothemes"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+    <!-- App css -->
+    <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-style" />
+
+    <!-- Icons -->
+    <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+
 </head>
-<body>
-<div class="container mt-4">
-    <h1 class="text-center">Tasks</h1>
 
-    <div class="mt-4 text-center">
-        <a href="task" class="btn btn-secondary">Tasks</a>
-        <a href="tag" class="btn btn-secondary">Tags</a>
-        <a href="taskrequest" class="btn btn-secondary">Requests</a>
+<!-- body start -->
+<body data-menu-color="dark" data-sidebar="default">
 
-    </div>
-    <%
-        String message = (String) session.getAttribute("message");
-        if (message != null) {
-    %>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <%= message %>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <%
-            session.removeAttribute("message"); // Remove the message after displaying it
-        }
-    %>
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
-        Create New User
-    </button>
+<!-- Begin page -->
+<div id="app-layout">
 
-    <table class="table table-bordered mt-3">
-        <thead>
-        <tr>
-            <th>Username</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>User Type</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <%
-            // Assuming the 'users' list is set in request scope by the servlet
-            List<User> users = (List<User>) request.getAttribute("users");
-            if (users != null && !users.isEmpty()) {
-                for (User user : users) {
-        %>
-        <tr>
-            <td><%= user.getUsername() %></td>
-            <td><%= user.getFirstName() %></td>
-            <td><%= user.getLastName() %></td>
-            <td><%= user.getEmail() %></td>
-            <td><%= user.getUserType() %></td>
-            <td>
-                <!-- Edit Button and Modal -->
-                <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editUserModal<%= user.getId() %>">
-                    Edit
-                </button>
 
-                <!-- Modal for editing User (unique for each user) -->
-                <div class="modal fade" id="editUserModal<%= user.getId() %>" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel<%= user.getId() %>" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="editUserModalLabel<%= user.getId() %>">Edit User: <%= user.getUsername() %></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="user" method="POST">
-                                    <input type="hidden" name="id" value="<%= user.getId() %>">
+    <!-- Topbar Start -->
+    <jsp:include page="partials/_header.jsp"></jsp:include>
+    <!-- end Topbar -->
 
-                                    <div class="form-group">
-                                        <label for="username<%= user.getId() %>">Username</label>
-                                        <input type="text" class="form-control" id="username<%= user.getId() %>" name="username" value="<%= user.getUsername() %>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="firstName<%= user.getId() %>">First Name</label>
-                                        <input type="text" class="form-control" id="firstName<%= user.getId() %>" name="firstName" value="<%= user.getFirstName() %>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="lastName<%= user.getId() %>">Last Name</label>
-                                        <input type="text" class="form-control" id="lastName<%= user.getId() %>" name="lastName" value="<%= user.getLastName() %>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email<%= user.getId() %>">Email</label>
-                                        <input type="email" class="form-control" id="email<%= user.getId() %>" name="email" value="<%= user.getEmail() %>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password<%= user.getId() %>">Password</label>
-                                        <input type="password" class="form-control" id="password<%= user.getId() %>" name="password" value="<%= user.getPassword() %>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="usertype<%= user.getId() %>">User Type</label>
-                                        <select class="form-control" id="usertype<%= user.getId() %>" name="usertype" required>
-                                            <option value="USER" <%= user.getUserType().name().equalsIgnoreCase("USER") ? "selected" : "" %>>User</option>
-                                            <option value="MANAGER" <%= user.getUserType().name().equalsIgnoreCase("MANAGER") ? "selected" : "" %>>Manager</option>
-                                        </select>
-                                    </div>
-                                    <input type="hidden" name="action" value="update">
-                                    <button type="submit" class="btn btn-primary">Update User</button>
-                                </form>
+    <!-- Left Sidebar Start -->
+    <jsp:include page="partials/_sidebar.jsp"></jsp:include>
+    <!-- Left Sidebar End -->
+
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+
+    <div class="content-page">
+        <div class="content">
+
+            <!-- Start Content-->
+            <div class="container-xxl">
+
+                <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+                    <div class="flex-grow-1 d-flex align-items-center">
+                        <i data-feather="users" class="me-2"></i>
+                        <h4 class="fs-18 fw-semibold m-0">Users</h4>
+                    </div>
+                </div>
+
+                <!-- Display users-->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">All Users</h5>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                                        Create New User
+                                    </button>
+                                </div>
+                            </div><!-- end card header -->
+
+                            <div class="card-body">
+                                <table id="dynamic-datatable" class="table table-bordered dt-responsive table-responsive nowrap">
+                                    <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Email</th>
+                                        <th>User Type</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <%
+                                        List<User> users = (List<User>) request.getAttribute("users");
+                                        if (users != null && !users.isEmpty()) {
+                                            for (User user : users) {
+                                    %>
+                                    <tr>
+                                        <td><%= user.getUsername() %></td>
+                                        <td><%= user.getFirstName() %></td>
+                                        <td><%= user.getLastName() %></td>
+                                        <td><%= user.getEmail() %></td>
+                                        <td><%= user.getUserType() %></td>
+                                        <td>
+                                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal<%= user.getId() %>">
+                                                Edit
+                                            </button>
+
+                                            <!-- Modal for editing User (unique for each user) -->
+                                            <div class="modal fade" id="editUserModal<%= user.getId() %>" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel<%= user.getId() %>" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="editUserModalLabel<%= user.getId() %>">Edit User: <%= user.getUsername() %></h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form action="user" method="POST">
+                                                                <input type="hidden" name="id" value="<%= user.getId() %>">
+
+                                                                <div class="row g-3">
+                                                                    <div class="col-xxl-6">
+                                                                        <div>
+                                                                            <label for="username<%= user.getId() %>" class="form-label">Username</label>
+                                                                            <input type="text" class="form-control" id="username<%= user.getId() %>" name="username" value="<%= user.getUsername() %>" required>
+                                                                        </div>
+                                                                    </div><!--end col-->
+                                                                    <div class="col-xxl-6">
+                                                                        <div>
+                                                                            <label for="firstName<%= user.getId() %>" class="form-label">First Name</label>
+                                                                            <input type="text" class="form-control" id="firstName<%= user.getId() %>" name="firstName" value="<%= user.getFirstName() %>" required>
+                                                                        </div>
+                                                                    </div><!--end col-->
+                                                                    <div class="col-xxl-6">
+                                                                        <div>
+                                                                            <label for="lastName<%= user.getId() %>" class="form-label">Last Name</label>
+                                                                            <input type="text" class="form-control" id="lastName<%= user.getId() %>" name="lastName" value="<%= user.getLastName() %>" required>
+                                                                        </div>
+                                                                    </div><!--end col-->
+                                                                    <div class="col-xxl-6">
+                                                                        <div>
+                                                                            <label for="email<%= user.getId() %>" class="form-label">Email</label>
+                                                                            <input type="email" class="form-control" id="email<%= user.getId() %>" name="email" value="<%= user.getEmail() %>" required>
+                                                                        </div>
+                                                                    </div><!--end col-->
+                                                                    <div class="col-xxl-6">
+                                                                        <div>
+                                                                            <label for="password<%= user.getId() %>" class="form-label">Password</label>
+                                                                            <input type="password" class="form-control" id="password<%= user.getId() %>" name="password" value="<%= user.getPassword() %>" required>
+                                                                        </div>
+                                                                    </div><!--end col-->
+                                                                    <div class="col-xxl-6">
+                                                                        <label for="usertype<%= user.getId() %>" class="form-label">User Type</label>
+                                                                        <select class="form-control" id="usertype<%= user.getId() %>" name="usertype" required>
+                                                                            <option value="USER" <%= user.getUserType().name().equalsIgnoreCase("USER") ? "selected" : "" %>>User</option>
+                                                                            <option value="MANAGER" <%= user.getUserType().name().equalsIgnoreCase("MANAGER") ? "selected" : "" %>>Manager</option>
+                                                                        </select>
+                                                                    </div><!--end col-->
+                                                                    <div class="col-lg-12">
+                                                                        <div class="hstack gap-2 justify-content-end">
+                                                                            <input type="hidden" name="action" value="update">
+                                                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                                            <button type="submit" class="btn btn-primary">Update User</button>
+                                                                        </div>
+                                                                    </div><!--end col-->
+                                                                </div><!--end row-->
+                                                            </form> <!-- end form -->
+                                                        </div> <!-- end modal body -->
+                                                    </div> <!-- end modal content -->
+                                                </div>
+                                            </div>
+
+
+                                            <form action="user" method="POST" style="display: inline;">
+                                                <input type="hidden" name="id" value="<%= user.getId() %>">
+                                                <input type="hidden" name="action" value="delete">
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <%
+                                        }
+                                    } else {
+                                    %>
+                                    <tr>
+                                        <td colspan="6" class="text-center">No users found.</td>
+                                    </tr>
+                                    <%
+                                        }
+                                    %>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
+                <!-- End Display users-->
+
+            </div> <!-- container-fluid -->
+        </div> <!-- content -->
+
+        <!-- Footer Start -->
+        <footer class="footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col fs-13 text-muted text-center">
+                        &copy; <script>document.write(new Date().getFullYear())</script> - Made with <span class="mdi mdi-heart text-danger"></span> by <a href="#!" class="text-reset fw-semibold">KHALID ZENNOUHI</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- end Footer -->
+
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Page content -->
+    <!-- ============================================================== -->
 
 
-                <form action="user" method="POST" style="display: inline;">
-                    <input type="hidden" name="id" value="<%= user.getId() %>">
-                    <input type="hidden" name="action" value="delete">
-                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
-                </form>
-            </td>
-
-        </tr>
-        <%
-            }
-        } else {
-        %>
-        <tr>
-            <td colspan="7" class="text-center">No users found.</td>
-        </tr>
-        <%
-            }
-        %>
-        </tbody>
-    </table>
 </div>
-
+<!-- END wrapper -->
 <!-- Modal for Adding New User -->
 <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form action="user" method="POST">
-                <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="firstName">First Name</label>
-                        <input type="text" class="form-control" id="firstName" name="firstName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="lastName">Last Name</label>
-                        <input type="text" class="form-control" id="lastName" name="lastName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="usertype">User Type</label>
-                        <select class="form-control" id="usertype" name="usertype" required>
-                            <option value="USER">user</option>
-                            <option value="MANAGER">manager</option>
-                        </select>
-                    </div>
-                    <input type="hidden" name="action" value="create">
-                    <button type="submit" class="btn btn-primary">Add User</button>
-                </form>
-            </div>
-        </div>
+                    <div class="row g-3">
+                        <div class="col-xxl-6">
+                            <div>
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" required placeholder="Enter username">
+                            </div>
+                        </div><!--end col-->
+                        <div class="col-xxl-6">
+                            <div>
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="firstName" name="firstName" required placeholder="Enter first name">
+                            </div>
+                        </div><!--end col-->
+                        <div class="col-xxl-6">
+                            <div>
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" name="lastName" required placeholder="Enter last name">
+                            </div>
+                        </div><!--end col-->
+                        <div class="col-xxl-6">
+                            <div>
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required placeholder="Enter your email">
+                            </div>
+                        </div><!--end col-->
+                        <div class="col-xxl-6">
+                            <div>
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" required placeholder="Enter password">
+                            </div>
+                        </div><!--end col-->
+                        <div class="col-xxl-6">
+                            <label for="usertype" class="form-label">User Type</label>
+                            <select class="form-control" id="usertype" name="usertype" required>
+                                <option value="USER">User</option>
+                                <option value="MANAGER">Manager</option>
+                            </select>
+                        </div><!--end col-->
+                        <div class="col-lg-12">
+                            <div class="hstack gap-2 justify-content-end">
+                                <input type="hidden" name="action" value="create">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Add User</button>
+                            </div>
+                        </div><!-- end col -->
+                    </div><!-- end row -->
+                </form> <!-- end form -->
+            </div> <!-- end modal body -->
+        </div> <!-- end modal content -->
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Vendor -->
+<script src="assets/libs/jquery/jquery.min.js"></script>
+<script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/libs/simplebar/simplebar.min.js"></script>
+<script src="assets/libs/node-waves/waves.min.js"></script>
+<script src="assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+<script src="assets/libs/feather-icons/feather.min.js"></script>
+
+
+<!-- App js-->
+<script src="assets/js/app.js"></script>
+
 </body>
 </html>
+
